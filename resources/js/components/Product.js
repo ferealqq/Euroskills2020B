@@ -30,13 +30,6 @@ export default class Product extends Component{
 				})
 			}
 		})
-		axios.get("/api/product-pictures").then(res=>{
-			if(res.data){
-				this.setState({
-					productImages: res.data,
-				})
-			}
-		})
 	}
 	selectProduct(event){
 		this.setState({
@@ -49,21 +42,19 @@ export default class Product extends Component{
 		})
 	}
 	defineImgSrc(){
-		const { selectedColor,selectedProduct,productImages} = this.state;
-		if(selectedColor&&selectedProduct&&productImages){
-			let fil = filter(productImages,(imageData)=>{
-				console.log(imageData["picture-path"])
-				console.log(imageData["picture-path"].includes(selectedProduct.toLowerCase()) && imageData["picture-path"].includes(selectedColor));
-				if(imageData["picture-path"].includes(selectedProduct.toLowerCase()) && imageData["picture-path"].includes(selectedColor)){
-					console.log("yees");
-					return imageData;
+		const { selectedColor,selectedProduct,products} = this.state;
+		if(selectedColor&&selectedProduct&&products){
+			let selectedItem = filter(products,(product)=>product.name===selectedProduct)[0];
+			let image = filter(selectedItem.images,(imageData)=>{
+				if(imageData["picture-path"].includes(selectedColor)){
+					return imageData;	
 				}
-			})
-			return fil[0].img;
+			});
+			return image[0].img;
 		}
 	}
 	render(){
-		const { products,colors,productImages } = this.state;
+		const { products,colors } = this.state;
 		const imgSrc = this.defineImgSrc();
 		console.log(this.state);
 		return(
@@ -79,7 +70,7 @@ export default class Product extends Component{
 						}
 					</Input>
 					<Label> Select a color </Label>
-					<Input type="select">
+					<Input type="select" onChange={this.selectColor}>
 						{
 							colors ? 
 								map(colors,(color)=><option key={color.name}>{color.name}</option>)
@@ -88,9 +79,23 @@ export default class Product extends Component{
 						}
 					</Input>
 				</Form>
+				<style>
+					{
+						`
+						.center {
+							position: absolute;
+							top: 50%;
+							left: 50%;
+							width: 20%;
+							transform: translate(-50%, -50%);
+						}
+						`
+					}
+				</style>
 				<Row>
-					<Col sm="9">
-						<img src={"data:image/png;base64,"+imgSrc} className="img-fluid img-thumbnail" />
+					<Col sm="9" className="justify-content-center">
+						<img src={"data:image/png;base64,"+imgSrc} className="img-fluid img-thumbnail w-100" />
+						<img src={"data:image/png;base64,"+this.props.symbol} className="img-fluid center" />
 					</Col>
 				</Row>
 			</Col>

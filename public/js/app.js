@@ -82141,7 +82141,9 @@ function (_Component) {
           src: imageData.img,
           selectSymbol: _this3.selectSymbol
         });
-      }) : null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Row"], null, selectedSymbol ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Product__WEBPACK_IMPORTED_MODULE_2__["default"], null) : null));
+      }) : null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Row"], null, selectedSymbol ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Product__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        symbol: selectedSymbol
+      }) : null));
     }
   }]);
 
@@ -82245,13 +82247,6 @@ function (_Component) {
           });
         }
       });
-      axios__WEBPACK_IMPORTED_MODULE_3___default.a.get("/api/product-pictures").then(function (res) {
-        if (res.data) {
-          _this2.setState({
-            productImages: res.data
-          });
-        }
-      });
     }
   }, {
     key: "selectProduct",
@@ -82273,19 +82268,18 @@ function (_Component) {
       var _this$state = this.state,
           selectedColor = _this$state.selectedColor,
           selectedProduct = _this$state.selectedProduct,
-          productImages = _this$state.productImages;
+          products = _this$state.products;
 
-      if (selectedColor && selectedProduct && productImages) {
-        var fil = Object(lodash__WEBPACK_IMPORTED_MODULE_2__["filter"])(productImages, function (imageData) {
-          console.log(imageData["picture-path"]);
-          console.log(imageData["picture-path"].includes(selectedProduct.toLowerCase()) && imageData["picture-path"].includes(selectedColor));
-
-          if (imageData["picture-path"].includes(selectedProduct.toLowerCase()) && imageData["picture-path"].includes(selectedColor)) {
-            console.log("yees");
+      if (selectedColor && selectedProduct && products) {
+        var selectedItem = Object(lodash__WEBPACK_IMPORTED_MODULE_2__["filter"])(products, function (product) {
+          return product.name === selectedProduct;
+        })[0];
+        var image = Object(lodash__WEBPACK_IMPORTED_MODULE_2__["filter"])(selectedItem.images, function (imageData) {
+          if (imageData["picture-path"].includes(selectedColor)) {
             return imageData;
           }
         });
-        return fil[0].img;
+        return image[0].img;
       }
     }
   }, {
@@ -82293,8 +82287,7 @@ function (_Component) {
     value: function render() {
       var _this$state2 = this.state,
           products = _this$state2.products,
-          colors = _this$state2.colors,
-          productImages = _this$state2.productImages;
+          colors = _this$state2.colors;
       var imgSrc = this.defineImgSrc();
       console.log(this.state);
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Col"], {
@@ -82308,16 +82301,21 @@ function (_Component) {
           key: product.name
         }, " ", product.name, " ");
       }) : null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Label"], null, " Select a color "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Input"], {
-        type: "select"
+        type: "select",
+        onChange: this.selectColor
       }, colors ? Object(lodash__WEBPACK_IMPORTED_MODULE_2__["map"])(colors, function (color) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
           key: color.name
         }, color.name);
-      }) : null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Row"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Col"], {
-        sm: "9"
+      }) : null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n\t\t\t\t\t\t.center {\n\t\t\t\t\t\t\tposition: absolute;\n\t\t\t\t\t\t\ttop: 50%;\n\t\t\t\t\t\t\tleft: 50%;\n\t\t\t\t\t\t\twidth: 20%;\n\t\t\t\t\t\t\ttransform: translate(-50%, -50%);\n\t\t\t\t\t\t}\n\t\t\t\t\t\t"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Row"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Col"], {
+        sm: "9",
+        className: "justify-content-center"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
         src: "data:image/png;base64," + imgSrc,
-        className: "img-fluid img-thumbnail"
+        className: "img-fluid img-thumbnail w-100"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+        src: "data:image/png;base64," + this.props.symbol,
+        className: "img-fluid center"
       }))));
     }
   }]);

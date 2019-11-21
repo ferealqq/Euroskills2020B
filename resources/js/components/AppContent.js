@@ -42,7 +42,7 @@ export default class AppContent extends Component{
 				<Row>
 					{
 						selectedSymbol ? 
-							<Product />
+							<Product symbol={selectedSymbol}/>
 						: 
 							null 
 					}
